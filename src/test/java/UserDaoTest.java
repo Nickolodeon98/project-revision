@@ -26,9 +26,9 @@ class UserDaoTest {
     @BeforeEach
     void setUp() {
         this.userDao = context.getBean("awsUserDao", UserDao.class);
-        this.user1 = new User("273", "Seunghwan", "2810");
-        this.user2 = new User("243", "Juhwan", "4912");
-        this.user3 = new User("353", "Minsoo", "7123");
+        this.user1 = new User("1", "Seunghwan", "2810");
+        this.user2 = new User("2", "Juhwan", "4912");
+        this.user3 = new User("3", "Minsoo", "7123");
     }
 
     @DisplayName("Insert query")
@@ -39,7 +39,7 @@ class UserDaoTest {
         userDao.add(user2);
         userDao.add(user3);
 
-        User user = userDao.select("273");
+        User user = userDao.select("1");
 
         assertEquals(user1.getName(), user.getName());
     }
