@@ -11,4 +11,8 @@ public class LocalConnectionMaker implements ConnectionMaker{
 
         return conn;
     }
+
+    public static void main(String[] args) {
+
+    }
 }

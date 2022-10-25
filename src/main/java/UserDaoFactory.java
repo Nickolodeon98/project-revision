@@ -11,4 +11,8 @@ public class UserDaoFactory {
     public UserDao localUserDao() {
         return new UserDao(new LocalConnectionMaker());
     }
+
+    public static void main(String[] args) {
+
+    }
 }

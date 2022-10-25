@@ -11,4 +11,8 @@ public class AwsConnectionMaker implements ConnectionMaker{
 
         return conn;
     }
+
+    public static void main(String[] args) {
+
+    }
 }
