@@ -1,25 +1,22 @@
 import domain.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Map;
 
 public class UserDao {
-    private ConnectionMaker connectionMaker;
-
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    private DataSource dataSource;
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public void add(User user) throws SQLException {
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = connectionMaker.makeConnection();
-            ps = conn.prepareStatement("INSERT INTO users VALUES (?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
+            conn = dataSource.getConnection();
+            ps = stmt.useStrategy(conn);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -35,6 +32,19 @@ public class UserDao {
         }
     }
 
+    public void add(User user) throws SQLException {
+        jdbcContextWithStatementStrategy(new StatementStrategy() {
+            @Override
+            public PreparedStatement useStrategy(Connection conn) throws SQLException {
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO users VALUES (?, ?, ?)");
+                ps.setString(1, user.getId());
+                ps.setString(2, user.getName());
+                ps.setString(3, user.getPassword());
+                return ps;
+            }
+        });
+    }
+
     public User select(String id) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -42,7 +52,7 @@ public class UserDao {
         User user = null;
 
         try {
-            conn = connectionMaker.makeConnection();
+            conn = dataSource.getConnection();
             ps = conn.prepareStatement("SELECT * FROM users WHERE id = ?");
             ps.setString(1, id);
             rs = ps.executeQuery();
@@ -75,24 +85,13 @@ public class UserDao {
     }
 
     public void deleteAll() {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = connectionMaker.makeConnection();
-            ps = conn.prepareStatement("DELETE FROM users");
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (ps != null) try {
-                ps.close();
-            } catch (SQLException e) {
+        jdbcContextWithStatementStrategy(new StatementStrategy() {
+            @Override
+            public PreparedStatement useStrategy(Connection conn) throws SQLException {
+                PreparedStatement ps = conn.prepareStatement("DELETE FROM users");
+                return ps;
             }
-            if (conn != null) try {
-                conn.close();
-            } catch (SQLException e) {
-            }
-        }
+        });
     }
 
     public int getCount() {
@@ -101,7 +100,7 @@ public class UserDao {
         ResultSet rs = null;
 
         try {
-            conn = connectionMaker.makeConnection();
+            conn = dataSource.getConnection();
             ps = conn.prepareStatement("SELECT count(*) FROM users");
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -123,9 +122,5 @@ public class UserDao {
             } catch (SQLException e) {
             }
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 }
