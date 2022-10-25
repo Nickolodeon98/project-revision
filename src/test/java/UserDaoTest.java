@@ -12,7 +12,12 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes=UserDaoFactory.class)
 class UserDaoTest {
+
+    @Autowired
+    ApplicationContext context;
     UserDao userDao;
     User user1;
     User user2;
@@ -20,7 +25,7 @@ class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-        this.userDao = new UserDao(new AwsConnectionMaker());
+        this.userDao = context.getBean("awsUserDao", UserDao.class);
         this.user1 = new User("273", "Seunghwan", "2810");
         this.user2 = new User("243", "Juhwan", "4912");
         this.user3 = new User("353", "Minsoo", "7123");
