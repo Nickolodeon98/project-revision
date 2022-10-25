@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -42,6 +43,8 @@ class UserDaoTest {
         User user = userDao.select("1");
 
         assertEquals(user1.getName(), user.getName());
+
+        assertThrows(EmptyResultDataAccessException.class, () -> userDao.select("4"));
     }
 
     @DisplayName("Delete")

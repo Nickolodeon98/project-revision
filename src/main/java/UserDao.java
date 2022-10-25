@@ -39,16 +39,20 @@ public class UserDao {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        User user = null;
 
         try {
             conn = connectionMaker.makeConnection();
             ps = conn.prepareStatement("SELECT * FROM users WHERE id = ?");
             ps.setString(1, id);
             rs = ps.executeQuery();
+
             if (rs.next()) {
-                User user = new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
-                return user;
-            } else throw new EmptyResultDataAccessException(1);
+                user = new User();
+                user.setId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setPassword(rs.getString("password"));
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -65,6 +69,9 @@ public class UserDao {
             } catch (SQLException e) {
             }
         }
+
+        if (user == null) throw new EmptyResultDataAccessException(1);
+        return user;
     }
 
     public void deleteAll() {
