@@ -67,6 +67,57 @@ public class UserDao {
         }
     }
 
+    public void deleteAll() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = connectionMaker.makeConnection();
+            ps = conn.prepareStatement("DELETE FROM users");
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (ps != null) try {
+                ps.close();
+            } catch (SQLException e) {
+            }
+            if (conn != null) try {
+                conn.close();
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    public int getCount() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = connectionMaker.makeConnection();
+            ps = conn.prepareStatement("SELECT count(*) FROM users");
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count(*)");
+            } else throw new EmptyResultDataAccessException(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (rs != null) try {
+                rs.close();
+            } catch (SQLException e) {
+            }
+            if (ps != null) try {
+                ps.close();
+            } catch (SQLException e) {
+            }
+            if (conn != null) try {
+                conn.close();
+            } catch (SQLException e) {
+            }
+        }
+    }
+
     public static void main(String[] args) {
 
     }
