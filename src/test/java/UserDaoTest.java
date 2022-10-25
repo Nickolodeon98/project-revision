@@ -34,6 +34,7 @@ class UserDaoTest {
     @DisplayName("Insert query")
     @Test
     void addAndGet() throws SQLException {
+        userDao.deleteAll();
         userDao.add(user1);
         userDao.add(user2);
         userDao.add(user3);
@@ -41,5 +42,22 @@ class UserDaoTest {
         User user = userDao.select("273");
 
         assertEquals(user1.getName(), user.getName());
+    }
+
+    @DisplayName("Delete")
+    @Test
+    void deleteAll() {
+        userDao.deleteAll();
+        assertEquals(0, userDao.getCount());
+    }
+
+    @DisplayName("Count")
+    @Test
+    void getCount() throws SQLException {
+        userDao.deleteAll();
+        userDao.add(user1);
+        userDao.add(user2);
+        userDao.add(user3);
+        assertEquals(3, userDao.getCount());
     }
 }
