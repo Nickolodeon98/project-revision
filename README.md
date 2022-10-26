@@ -7,7 +7,7 @@
 
 INSERT 와 SELECT 쿼리를 사용해 데이터 추가와 접근을 구현한다.
 ```
-### 👉 UserDaoFactory 적용까지의 과정 
+### 👉🏼 UserDaoFactory 적용까지의 과정 
 
 ```
 ☑️ 이전의 UserDao 에서는 모든 메소드에서 중복하여 Connection 객체를 생성하고 있다. 이래서는 Connection 의 상태 하나만 바꾸려고 해도,
