@@ -1,4 +1,4 @@
-# project-revision
+# 토비의 스프링 3 예제 실습
 
 ### 👉🏼 최초의 UserDao 클래스
 
